@@ -1,5 +1,7 @@
 import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
+require('dotenv').config()
+
 
 export const authOptions = {
   // Configure one or more authentication providers
@@ -23,7 +25,7 @@ export const authOptions = {
         // You can also use the `req` object to obtain additional parameters
         // (i.e., the request IP address)
         console.log("credentials", credentials)
-        const res = await fetch("/api/server", {
+        const res = await fetch(process.env.NEXTAUTH_URL, {
           method: 'POST',
           body: JSON.stringify(credentials),
           headers: {
