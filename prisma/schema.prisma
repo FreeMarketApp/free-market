@@ -17,5 +17,22 @@ model user {
   phonenumber String
   password    String
   seller      Boolean
+  user_store user_store?
+}
+
+model user_store {
+  id  Int      @id @default(autoincrement())
+  menu_items   menu_items[]
+  user user? @relation(fields: [user_id], references: [id])
+  user_id Int @unique
+}
+
+model menu_items {
+  id  Int      @id @default(autoincrement())
+  user_store  user_store @relation(fields: [user_store_id], references: [id])
+  user_store_id Int
+  item_name   String
+  item_price  String
+  item_photo  String
 }
 

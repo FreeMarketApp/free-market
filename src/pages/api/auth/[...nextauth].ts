@@ -25,7 +25,7 @@ export const authOptions = {
         // You can also use the `req` object to obtain additional parameters
         // (i.e., the request IP address)
         console.log("credentials", credentials)
-        const res = await fetch(process.env.NEXTAUTH_URL, {
+        const res = await fetch(`${process.env.NEXTAUTH_URL}/api/server`, {
           method: 'POST',
           body: JSON.stringify(credentials),
           headers: {
@@ -33,8 +33,6 @@ export const authOptions = {
           },
         })
         const user = await res.json()
-
-        console.log("user", user)
         // If no error and we have user data, return it
         if (res.ok && user) {
           return user
@@ -45,6 +43,11 @@ export const authOptions = {
     })
   ], pages: {
     signIn: "/SignIn"
-  }
+  }, session: {
+    strategy: "jwt"
+  },
+    jwt: {
+      secret: "secret"
+    }
 }
 export default NextAuth(authOptions)

@@ -1,6 +1,7 @@
 import { useState, useEffect, InputHTMLAttributes, FormEventHandler } from "react";
 import { user } from "@prisma/client";
 import { error } from "console";
+import Router from "next/router";
 
 const newUser: user = {
   id: 0,
@@ -8,7 +9,7 @@ const newUser: user = {
   email: "",
   username: "",
   firstname: "",
-  lastname: "", 
+  lastname: "",
   phonenumber: "",
   password: "",
   seller: false,
@@ -18,11 +19,16 @@ export default function SignUp() {
   const [userSignUpData, setUserSignUpData] = useState(newUser)
 
   function handleUserDataChange(evt: React.ChangeEvent<HTMLInputElement> ) {
-    setUserSignUpData({...userSignUpData, [evt.target.name]: evt.target.value})
+    if (evt.target.name === "seller") {
+      setUserSignUpData({...userSignUpData, [evt.target.name]: evt.target.checked})
+    } else {
+      setUserSignUpData({...userSignUpData, [evt.target.name]: evt.target.value})
+    }
   }
 
   function handleUserDataSubmit(evt: React.FormEvent<HTMLFormElement>) {
     evt?.preventDefault()
+    console.log(userSignUpData)
     fetch('/api/createNewUser',
     {
       method: "POST",
@@ -31,7 +37,7 @@ export default function SignUp() {
       },
       body: JSON.stringify(userSignUpData)
     }).then((response) => {
-      console.log('Passed successfully');
+      Router.replace("/SignIn")
     }).catch((error) => {
       console.log(error);
     })
@@ -46,7 +52,7 @@ export default function SignUp() {
       <label>First Name: <input type="text" name="firstname" onChange={handleUserDataChange}/></label>
       <label>Last Name: <input type="text" name="lastname" onChange={handleUserDataChange}/></label>
       <label>Phone Number: <input type="text" name="phonenumber" onChange={handleUserDataChange}/></label>
-      <label>Are you a seller? <input type="text" name="seller" onChange={handleUserDataChange}/></label>
+      <label>Are you a seller? <input type="checkbox" name="seller" onChange={handleUserDataChange}/></label>
       <input type="submit" value="Submit" />
     </form>
     </>

@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import { user } from '@prisma/client'
 import type { NextApiRequest, NextApiResponse } from 'next'
-import {getAllUsers} from './database'
+import {getAllUsers, getUserInfo} from './database'
 const bcrypt = require("bcrypt")
 
 export default async function handler(
@@ -9,19 +9,22 @@ export default async function handler(
   res: NextApiResponse<any>
 ) {
   let unHashed = req.body.password
-  let currPass = "$2b$10$h/ETBR1aQ3rY9T8vRHaZduakQrEJpnPEEOmliYWWjjncZ1T26GSd."
-  console.log(req)
+
   if (req.method === "POST") {
-    console.log("body", req.body)
-    // bcrypt.compare(unHashed, currPass, (err, response) => {
-    //   console.log("password", response)
-    //   if (response === true) {
-    //     res.status(200).json({username: req.body.username})
-    //   } else {
-    //     res.status(200)
-    //   }
-    // })
-    res.status(200).json({username: req.body.username})
+    console.log("request body password ", req.body.password)
+    const currentUserLogin = await getUserInfo(req.body.username)
+    console.log("current User login ", currentUserLogin)
+    if (currentUserLogin === null) {
+      return null
+    }
+    bcrypt.compare(unHashed, currentUserLogin?.password, (err, response) => {
+      console.log("password", response)
+      if (response === true) {
+        res.status(200).json({username: req.body.username})
+      } else {
+        res.status(200).json(null)
+      }
+    })
   }
   // const results = await getAllUsers()
   // res.status(200).json(results)
