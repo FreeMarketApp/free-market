@@ -9,7 +9,6 @@ export default async function handler(
   res: NextApiResponse<user>
 ) {
   if (req.method === "POST") {
-    console.log(req.body)
     bcrypt.hash(req.body.password, 10, async (err: any, hash: any) => {
       req.body.password = hash
       let newUser = await createNewUser(req.body)

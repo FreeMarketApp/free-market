@@ -7,6 +7,7 @@ import { user } from '@prisma/client';
 export default function Home() {
   const [userData, setAllUserData] = useState([]);
   const {status, data} = useSession();
+  const [dropBoxUser, setDropBoxUser] = useState([]);
 
   useEffect(() => {
     fetch('/api/getAllSellerInfo').then((response) => {
@@ -14,6 +15,10 @@ export default function Home() {
         setAllUserData(data);
       })
     })
+  }, [])
+
+  useEffect(() => {
+    fetch('/api/dropbox/listAllDropboxFolders')
   }, [])
 
   useEffect(() => {

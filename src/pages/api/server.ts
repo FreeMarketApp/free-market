@@ -8,8 +8,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<any>
 ) {
-  let unHashed = req.body.password
-
+  const unHashed = req.body.password
   if (req.method === "POST") {
     console.log("request body password ", req.body.password)
     const currentUserLogin = await getUserInfo(req.body.username)

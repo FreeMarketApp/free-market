@@ -14,7 +14,7 @@ export default function SignIn() {
   },[status])
 
   async function signInUser() {
-    const signInCredentials = await signIn("credentials", {username: userUsername, password: userPass, redirect: false, callbackUrl: "https://www.google.com"})
+    const signInCredentials = await signIn("credentials", {username: userUsername, password: userPass, redirect: false, callbackUrl: "/"})
     if (signInCredentials?.error === null) {
       alert("successfully signed in")
       Router.replace(signInCredentials?.url === null ? "/" : signInCredentials.url)
