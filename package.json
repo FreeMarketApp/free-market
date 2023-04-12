@@ -18,6 +18,7 @@
     "dropbox": "^10.34.0",
     "eslint": "8.37.0",
     "eslint-config-next": "13.2.4",
+    "formidable": "^2.1.1",
     "isomorphic-fetch": "^3.0.0",
     "knex": "^2.4.2",
     "next": "13.2.4",
@@ -29,6 +30,7 @@
     "typescript": "5.0.3"
   },
   "devDependencies": {
+    "@types/formidable": "^2.0.5",
     "autoprefixer": "^10.4.14",
     "postcss": "^8.4.21",
     "prisma": "^4.12.0",

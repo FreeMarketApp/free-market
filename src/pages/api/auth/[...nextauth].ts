@@ -1,5 +1,6 @@
 import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
+import { user } from "@prisma/client"
 require('dotenv').config()
 
 
@@ -21,6 +22,7 @@ export const authOptions = {
         })
         const user = await res.json()
         if (res.ok && user) {
+          console.log(user.username)
           return user
         }
         return null
@@ -33,6 +35,18 @@ export const authOptions = {
   },
     jwt: {
       secret: "secret"
+    },
+    callbacks: {
+      async session({ session, token }) {
+        session.user = token.user;
+        return session;
+      },
+      async jwt({ token, user}) {
+        if (user) {
+          token.user = user;
+        }
+        return token;
+      }
     }
 }
 export default NextAuth(authOptions)

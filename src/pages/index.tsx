@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import Router from 'next/router'
-import { useSession } from 'next-auth/react'
+import { useSession, signOut } from 'next-auth/react'
 import SignUp from './SignUp'
 import { user } from '@prisma/client';
 
@@ -23,6 +23,7 @@ export default function Home() {
 
   useEffect(() => {
     console.log("status: ", status)
+    console.log("data: ", data?.user)
     if (status === "unauthenticated") {
       Router.replace("/SignIn")
     }
@@ -33,6 +34,7 @@ export default function Home() {
     <>
         <h1 className="text-3xl font-bold underline"></h1>
         <div>Home Page</div>
+        <button onClick={() => signOut()}>Sign Out</button>
         <table>
           <tbody>
           {
