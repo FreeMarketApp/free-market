@@ -35,6 +35,7 @@ export default function Home() {
         <h1 className="text-3xl font-bold underline"></h1>
         <div>Home Page</div>
         <button onClick={() => signOut()}>Sign Out</button>
+        <button onClick={() => Router.replace("/ProfileDashboard")}>Profile</button>
         <table>
           <tbody>
           {
