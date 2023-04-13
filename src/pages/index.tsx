@@ -10,6 +10,8 @@ export default function Home() {
   const [dropBoxUser, setDropBoxUser] = useState([]);
 
   useEffect(() => {
+
+
     fetch('/api/getAllSellerInfo').then((response) => {
       response.json().then((data) => {
         setAllUserData(data);

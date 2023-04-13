@@ -21,6 +21,10 @@ async function getAllSellers() {
   }}))
 }
 
+async function updateUserProfileImg(username: string, profile_img: string) {
+  return await prisma.user.update({where: {username: username}, data: {profile_img: profile_img}})
+}
+
 async function createNewUser(newUserReq: user) {
   return await prisma.user.create({
     data: {
@@ -32,6 +36,7 @@ async function createNewUser(newUserReq: user) {
       username: newUserReq.username,
       password: newUserReq.password,
       seller: newUserReq.seller,
+      profile_img: newUserReq.profile_img,
     }
   })
 }
@@ -40,5 +45,6 @@ export {
   getAllUsers,
   createNewUser,
   getUserInfo,
-  getAllSellers
+  getAllSellers,
+  updateUserProfileImg
 }

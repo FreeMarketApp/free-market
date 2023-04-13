@@ -22,11 +22,6 @@ export default async function handler(
       }).catch((error) => {
         console.log(error);
       })
-      // dbx.filesCreateFolderV2({path: `/users/${newUser.username}`}).then((response) => {
-      //   console.log(response)
-      // }).catch((error) => {
-      //   console.log(error)
-      // })
       res.status(200).json(newUser)
     })
   }
