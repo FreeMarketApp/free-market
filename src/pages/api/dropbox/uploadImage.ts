@@ -9,14 +9,13 @@ import { authOptions } from "../auth/[...nextauth]";
 import { getSession } from "next-auth/react";
 import { responseData } from "@/types/apihelper";
 
-const dbx = new Dropbox({ accessToken: process.env.ACCESS_TOKEN });
+const dbx = new Dropbox({ refreshToken: process.env.DB_REFRESH_TOKEN, clientId: process.env.DB_APP_KEY, clientSecret: process.env.DB_APP_SECRET});
 
 export const config = {
   api: {
     bodyParser: false,
   },
 };
-
 
 
 export default async function handler(

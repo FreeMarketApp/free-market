@@ -3,6 +3,7 @@ import { useSession } from "next-auth/react";
 import { user } from "@prisma/client";
 import Image from "next/image";
 import ItemComponent from "./ItemComponent";
+import AllMenuItems from "./AllMenuItems";
 import { responseData } from "@/types/apihelper";
 
 export default function ProfileDashboard() {
@@ -63,6 +64,7 @@ export default function ProfileDashboard() {
     </form>
     <Image src={profile_image} alt="profile-img" width={200} height={200}/>
     <ItemComponent/>
+    <AllMenuItems/>
     </>
   )
 }

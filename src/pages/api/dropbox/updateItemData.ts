@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 require("dotenv").config();
-import { createUserStore, createMenuItem, updateMenuItemDetails, updateMenuItemPhoto, getUserInfo, getMenuItemById } from "../database";
+import { updateMenuItemDetails, updateMenuItemPhoto, getUserInfo, getMenuItemById } from "../database";
 import fs from "fs";
 import { Dropbox } from "dropbox";
 import { IncomingForm } from "formidable";
@@ -17,8 +17,6 @@ export const config = {
     bodyParser: false,
   },
 };
-
-
 
 export default async function handler(
   req: NextApiRequest,
@@ -44,36 +42,38 @@ export default async function handler(
 
   if (req.method === "POST") {
     const form = new IncomingForm();
-    let viewableLink:string = "";
 
     const userInfo = await getUserInfo(currentUser);
 
-    // console.log('userInfo: ', userInfo);
 
     form.parse(req, async (err, fields, files) => {
       const data = fs.readFileSync(files.file.filepath);
       console.log('fields: ', fields);
       console.log('form data: ', data);
-      if (userInfo !== null && userInfo.user_store !== null) {
-        const current_item: menu_items = {
-          id: 0,
-          item_name: fields.itemName.toString(),
-          item_price: fields.itemPrice.toString(),
-          item_photo: "",
-          user_store_id: userInfo?.user_store?.id
-        }
-        const new_menu_item = await createMenuItem(current_item)
-        console.log("item being added: ", current_item);
+      
+       if(files.file){
 
-        await dbx.filesUpload({path: `/users/${userInfo.username}/food_images/item_image_${new_menu_item.id}.jpg`, contents: data});
-        let shared_link = await dbx.sharingCreateSharedLinkWithSettings({path: `/users/${userInfo.username}/food_images/item_image_${new_menu_item.id}.jpg`});
-        const replaced_link = shared_link.result.url.replace("dl=0", "raw=1");
+       } 
 
-        await updateMenuItemPhoto(replaced_link, new_menu_item.id);
-        const new_menu_item_details = await getMenuItemById(new_menu_item.id);
+      let menu_item: menu_items = {
+        id: 0,
+        item_name: "",
+        item_photo: files.file == null ? null : dropboxurl,
+        item_price:"0"
+        //if there is a dropbox sharelink then set image_photo to that link otherwise null
+      }
 
-        responseData.content = new_menu_item_details;
-        return res.status(responseData.status).send(responseData);
+        // call updateMenuItemDetails with menu_item object
+
+        // await dbx.filesUpload({path: `/users/${userInfo.username}/food_images/item_image_${new_menu_item.id}.jpg`, contents: data});
+        // let shared_link = await dbx.sharingCreateSharedLinkWithSettings({path: `/users/${userInfo.username}/food_images/item_image_${new_menu_item.id}.jpg`});
+        // const replaced_link = shared_link.result.url.replace("dl=0", "raw=1");
+
+        // await updateMenuItemPhoto(replaced_link, new_menu_item.id);
+        // const new_menu_item_details = await getMenuItemById(new_menu_item.id);
+
+        // responseData.content = new_menu_item_details;
+        // return res.status(responseData.status).send(responseData);
       }
 
       return res.status(responseData.status).send(responseData);

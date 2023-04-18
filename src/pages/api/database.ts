@@ -1,5 +1,5 @@
 require('dotenv').config()
-import { user } from "@prisma/client"
+import { menu_items, user } from "@prisma/client"
 import { equal } from "assert"
 import { prisma } from "../../../server/db-global"
 
@@ -8,7 +8,15 @@ async function getAllUsers() {
 }
 
 async function getUserInfo(username: string) {
-  return await prisma.user.findFirst({where: {username: username}})
+  return await prisma.user.findFirst({where: {username: username}, include: {user_store: true}})
+}
+
+async function getMenuItemById(item_id: number) {
+  return await prisma.menu_items.findFirst({where: {id: item_id}});
+}
+
+async function getAllMenuItems(user_store_id: number) {
+  return await prisma.user_store.findFirst({where: {id: user_store_id}, include: {menu_items: true}})
 }
 
 async function getAllSellers() {
@@ -19,6 +27,49 @@ async function getAllSellers() {
     lastname: true,
     phonenumber: true
   }}))
+}
+
+async function createUserStore(user_id: number) {
+  return await prisma.user_store.create({
+    data: {
+      user_id: user_id
+    }
+  })
+}
+
+async function createMenuItem(item: menu_items) {
+  return await prisma.menu_items.create({
+    data: {
+      item_name: item.item_name,
+      item_price: item.item_price,
+      item_photo: item.item_photo,
+      user_store_id: item.user_store_id
+    }
+  })
+}
+
+async function updateMenuItemPhoto(item_photo: string, item_id: number) {
+  return await prisma.menu_items.update({
+    data: {
+      item_photo: item_photo
+    }, where: {
+      id: item_id
+    }
+  })
+}
+
+async function updateMenuItemDetails(item: menu_items) {
+  await prisma.menu_items.update({
+    data: {
+      item_name: item.item_name,
+      item_price: item.item_price
+    }, where: {
+      id: item.id
+    }
+  })
+  if (item.item_photo !== null) {
+    await updateMenuItemPhoto(item.item_photo, item.id);
+  }
 }
 
 async function updateUserProfileImg(username: string, profile_img: string) {
@@ -46,5 +97,11 @@ export {
   createNewUser,
   getUserInfo,
   getAllSellers,
-  updateUserProfileImg
+  updateUserProfileImg,
+  createUserStore,
+  updateMenuItemDetails,
+  createMenuItem,
+  updateMenuItemPhoto,
+  getMenuItemById,
+  getAllMenuItems
 }
