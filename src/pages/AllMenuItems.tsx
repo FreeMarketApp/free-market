@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { user, menu_items, user_store } from "@prisma/client";
 import { responseData } from "@/types/apihelper";
+import SingleItemDisplay from "./SingleItemDisplay";
 
 
 export default function AllMenuItems() {
@@ -23,9 +24,9 @@ export default function AllMenuItems() {
         const getAllMenuItems = async () => {
             const menu_items_result = await fetch("/api/getAllMenuItems");
             let jsonResult: responseData = await menu_items_result.json();
-
+            
             if(!jsonResult.hasError) {
-                setMenuData(await jsonResult.content);
+                setMenuData(await jsonResult.content.menu_items);
             }
         }
         
@@ -37,14 +38,27 @@ export default function AllMenuItems() {
         retrieveUserAndMenu();
     }, [])
 
-    console.log(menuData);
+    const deleteItem = async (item_id: number) => {
+
+        await fetch('/api/dropbox/deleteItem', {
+            method: "POST",
+            headers:{
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(item_id)
+        })
+    }
 
     return (
         <>
+        <div>All Menu Items</div>
         {
-            menuData.map((singleItem) => {
-                <SingleItemDisplay singleItem={singleItem} key={singleItem.id}/>
-            })
+            menuData.map((singleItem) => (
+                <div key={singleItem.id}>
+                    <SingleItemDisplay singleItem={singleItem}/>
+                    <button onClick={() => deleteItem(singleItem.id)}>Delete Item</button>
+                </div>
+            ))
         }
         </>
     )

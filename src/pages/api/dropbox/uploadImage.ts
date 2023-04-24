@@ -4,8 +4,6 @@ import { updateUserProfileImg } from "../database";
 import fs from "fs";
 import { Dropbox } from "dropbox";
 import { IncomingForm } from "formidable";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]";
 import { getSession } from "next-auth/react";
 import { responseData } from "@/types/apihelper";
 

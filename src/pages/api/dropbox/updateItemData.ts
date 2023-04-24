@@ -45,38 +45,28 @@ export default async function handler(
 
     const userInfo = await getUserInfo(currentUser);
 
-
     form.parse(req, async (err, fields, files) => {
-      const data = fs.readFileSync(files.file.filepath);
-      console.log('fields: ', fields);
-      console.log('form data: ', data);
+        let itemJSON: menu_items = JSON.parse(fields.currentItem.toString());
+        console.log('Item being updated: ', itemJSON);
+
+        if (files.file) {
+          const data = fs.readFileSync(files.file.filepath);
+          console.log('new image upload ', data)
+          await dbx.filesDeleteV2({path: `/users/${userInfo?.username}/food_images/item_image_${itemJSON.id}.jpg`}).catch((error) => console.log('error: ', error));
+          await dbx.filesUpload({path: `/users/${userInfo?.username}/food_images/item_image_${itemJSON.id}.jpg`, contents: data});
+          let shared_link = await dbx.sharingCreateSharedLinkWithSettings({path: `/users/${userInfo?.username}/food_images/item_image_${itemJSON.id}.jpg`});
+          console.log('sharable link :', shared_link)
+          const replaced_link = shared_link.result.url.replace("dl=0", "raw=1");
+          itemJSON.item_photo = replaced_link;
+        } else {
+          itemJSON.item_photo = '';
+        }
       
-       if(files.file){
+        await updateMenuItemDetails(itemJSON);
 
-       } 
-
-      let menu_item: menu_items = {
-        id: 0,
-        item_name: "",
-        item_photo: files.file == null ? null : dropboxurl,
-        item_price:"0"
-        //if there is a dropbox sharelink then set image_photo to that link otherwise null
-      }
-
-        // call updateMenuItemDetails with menu_item object
-
-        // await dbx.filesUpload({path: `/users/${userInfo.username}/food_images/item_image_${new_menu_item.id}.jpg`, contents: data});
-        // let shared_link = await dbx.sharingCreateSharedLinkWithSettings({path: `/users/${userInfo.username}/food_images/item_image_${new_menu_item.id}.jpg`});
-        // const replaced_link = shared_link.result.url.replace("dl=0", "raw=1");
-
-        // await updateMenuItemPhoto(replaced_link, new_menu_item.id);
-        // const new_menu_item_details = await getMenuItemById(new_menu_item.id);
-
-        // responseData.content = new_menu_item_details;
-        // return res.status(responseData.status).send(responseData);
-      }
-
-      return res.status(responseData.status).send(responseData);
-    });
+        const new_menu_item_details = await getMenuItemById(itemJSON.id);
+        responseData.content = new_menu_item_details;
+        return res.status(responseData.status).send(responseData);
+      })
+    }
   }
-}

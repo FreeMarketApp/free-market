@@ -50,10 +50,11 @@ async function createMenuItem(item: menu_items) {
 
 async function updateMenuItemPhoto(item_photo: string, item_id: number) {
   return await prisma.menu_items.update({
+    where: {
+      id: item_id
+    },
     data: {
       item_photo: item_photo
-    }, where: {
-      id: item_id
     }
   })
 }
@@ -67,7 +68,7 @@ async function updateMenuItemDetails(item: menu_items) {
       id: item.id
     }
   })
-  if (item.item_photo !== null) {
+  if (item.item_photo !== '') {
     await updateMenuItemPhoto(item.item_photo, item.id);
   }
 }

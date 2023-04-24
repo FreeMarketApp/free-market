@@ -1,11 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 require("dotenv").config();
-import { createUserStore, createMenuItem, updateMenuItemDetails, updateMenuItemPhoto, getUserInfo, getMenuItemById } from "../database";
+import { createMenuItem, updateMenuItemPhoto, getUserInfo, getMenuItemById } from "../database";
 import fs from "fs";
 import { Dropbox } from "dropbox";
 import { IncomingForm } from "formidable";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]";
 import { getSession } from "next-auth/react";
 import { responseData } from "@/types/apihelper";
 import { menu_items } from "@prisma/client";
@@ -17,8 +15,6 @@ export const config = {
     bodyParser: false,
   },
 };
-
-
 
 export default async function handler(
   req: NextApiRequest,

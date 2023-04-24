@@ -13,6 +13,7 @@ const newUser: user = {
   phonenumber: "",
   password: "",
   seller: false,
+  profile_img: null
 }
 
 export default function SignUp() {
